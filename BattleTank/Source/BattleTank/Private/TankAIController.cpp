@@ -43,3 +43,9 @@ void ATankAIController::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("Could not find player tank!"));
 	}
 }
+
+void ATankAIController::Tick(float DeltaSeconds)
+{
+	auto targetTank = GetPlayerTank();
+	GetControlledTank()->AimAt(targetTank->GetActorLocation());
+}
