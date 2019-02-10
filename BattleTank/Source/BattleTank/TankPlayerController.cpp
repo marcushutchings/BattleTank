@@ -8,6 +8,14 @@ ATank* ATankPlayerController::GetControlledTank() const
 	return Cast<ATank>(GetPawn());
 }
 
+void ATankPlayerController::AimTowardsCrosshair()
+{
+	if (GetControlledTank)
+	{
+		// to something cool
+	}
+}
+
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -19,4 +27,10 @@ void ATankPlayerController::BeginPlay()
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("No Tank Controlled!"));
 	}
+}
+
+void ATankPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	AimTowardsCrosshair();
 }
