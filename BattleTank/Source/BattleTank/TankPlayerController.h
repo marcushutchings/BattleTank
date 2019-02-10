@@ -20,6 +20,8 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 
 	void AimTowardsCrosshair();
 
+	bool GetSightRayHitLocation(FVector& OutLocationHitInWorldByRay) const;
+
 public:
 	virtual void BeginPlay() override;
 
