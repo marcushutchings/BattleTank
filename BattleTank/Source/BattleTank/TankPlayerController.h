@@ -2,7 +2,8 @@
 
 #pragma once
 
-#include "Public/Tank.h"
+class ATank;
+
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"

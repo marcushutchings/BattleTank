@@ -3,8 +3,8 @@
 #pragma once
 
 class UTankBarrel;
+class UTankAimingComponent;
 
-#include "TankAimingComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"
