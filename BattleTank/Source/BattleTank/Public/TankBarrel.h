@@ -24,6 +24,6 @@ class BATTLETANK_API UTankBarrel : public UStaticMeshComponent
 		float MinElevationInDegress = 0.f;
 	
 public:
-	void Elevate(float DegreesPerSecond);
+	void Elevate(float RelativeSpeed);
 	
 };

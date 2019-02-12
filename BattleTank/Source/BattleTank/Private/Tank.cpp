@@ -27,13 +27,7 @@ void ATank::BeginPlay()
 {
 	Super::BeginPlay();
 	
-}
-
-// Called every frame
-void ATank::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 // Called to bind functionality to input
