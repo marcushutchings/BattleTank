@@ -3,6 +3,7 @@
 #include "Public/TankAimingComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Public/TankBarrel.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -58,7 +59,7 @@ void UTankAimingComponent::AimAt(FVector LocationToAimAt, float ProjectileSpeed)
 	//UE_LOG(LogTemp, Warning, TEXT("%s has barrel %s"), *GetName(), *Barrel->Positi->GetName());
 }
 
-void UTankAimingComponent::SetBarrelMesh(UStaticMeshComponent * BarrelToSet)
+void UTankAimingComponent::SetBarrelMesh(UTankBarrel * BarrelToSet)
 {
 	Barrel = BarrelToSet;
 }

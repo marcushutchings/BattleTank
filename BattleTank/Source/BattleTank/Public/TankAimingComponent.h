@@ -2,10 +2,11 @@
 
 #pragma once
 
+class UTankBarrel;
+
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "TankAimingComponent.generated.h"
-
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankAimingComponent : public UActorComponent
@@ -26,10 +27,10 @@ public:
 
 	void AimAt(FVector Location, float ProjectileSpeed);
 
-	void SetBarrelMesh(UStaticMeshComponent* BarrelToSet);
+	void SetBarrelMesh(UTankBarrel* BarrelToSet);
 	
 private:
-	UStaticMeshComponent* Barrel = nullptr;
+	UTankBarrel* Barrel = nullptr;
 
 	void MoveBarrel(FVector AimDirection);
 };

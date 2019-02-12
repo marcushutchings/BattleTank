@@ -2,6 +2,8 @@
 
 #pragma once
 
+class UTankBarrel;
+
 #include "TankAimingComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -19,7 +21,7 @@ public:
 	void AimAt(FVector Location);
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
-		void SetBarrelMesh(UStaticMeshComponent* BarrelToSet);
+		void SetBarrelMesh(UTankBarrel* BarrelToSet);
 
 protected:
 	// Called when the game starts or when spawned
