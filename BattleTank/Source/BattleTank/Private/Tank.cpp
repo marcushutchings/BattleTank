@@ -14,7 +14,12 @@ ATank::ATank()
 
 void ATank::AimAt(FVector Location)
 {
-	TankAimingComponent->AimAt(Location);
+	TankAimingComponent->AimAt(Location, LaunchProjectileSpeed);
+}
+
+void ATank::SetBarrelMesh(UStaticMeshComponent * BarrelToSet)
+{
+	TankAimingComponent->SetBarrelMesh(BarrelToSet);
 }
 
 // Called when the game starts or when spawned

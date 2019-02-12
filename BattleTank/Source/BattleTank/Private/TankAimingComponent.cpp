@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Public/TankAimingComponent.h"
-
+#include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -28,8 +29,49 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UTankAimingComponent::AimAt(FVector Location)
+void UTankAimingComponent::AimAt(FVector LocationToAimAt, float ProjectileSpeed)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s"), *GetName(), *Location.ToString());
+	if (Barrel)
+	{
+		FVector SuggestedProjectileVelocity;
+
+		bool result = UGameplayStatics::SuggestProjectileVelocity
+		(
+			this,
+			SuggestedProjectileVelocity,
+			Barrel->GetSocketLocation(FName("MuzzleEnd")),
+			LocationToAimAt,
+			ProjectileSpeed,
+			false,
+			0.f,
+			0.f,
+			ESuggestProjVelocityTraceOption::DoNotTrace
+		);
+
+		auto AimDirection = SuggestedProjectileVelocity.GetSafeNormal();
+
+		MoveBarrel(AimDirection);
+
+		//UE_LOG(LogTemp, Warning, TEXT("%s aiming direction is %s (%d)"), *GetOwner()->GetName(), *AimDirection.ToString(), result);
+	}
+
+	//UE_LOG(LogTemp, Warning, TEXT("%s has barrel %s"), *GetName(), *Barrel->Positi->GetName());
+}
+
+void UTankAimingComponent::SetBarrelMesh(UStaticMeshComponent * BarrelToSet)
+{
+	Barrel = BarrelToSet;
+}
+
+void UTankAimingComponent::MoveBarrel(FVector AimDirection)
+{
+	FRotator BarrelRotation;
+
+	auto CurrentBarrelRotation = Barrel->GetForwardVector().Rotation();
+	auto TargetRotation = AimDirection.Rotation();
+
+	auto DelatRotation = TargetRotation - CurrentBarrelRotation;
+
+	UE_LOG(LogTemp, Warning, TEXT("Aim as %s"), *TargetRotation.ToString());
 }
 
