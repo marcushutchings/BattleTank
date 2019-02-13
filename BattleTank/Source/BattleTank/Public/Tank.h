@@ -2,8 +2,9 @@
 
 #pragma once
 
-class UTankBarrel;
 class UTankAimingComponent;
+class UTankBarrel;
+class UTankTurret;
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -22,6 +23,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
 		void SetBarrelMesh(UTankBarrel* BarrelToSet);
+
+	UFUNCTION(BlueprintCallable, Category = Setup)
+		void SetTurretMesh(UTankTurret* TurretToSet);
 
 protected:
 	// Called when the game starts or when spawned

@@ -3,6 +3,7 @@
 #pragma once
 
 class UTankBarrel;
+class UTankTurret;
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
@@ -28,9 +29,12 @@ public:
 	void AimAt(FVector Location, float ProjectileSpeed);
 
 	void SetBarrelMesh(UTankBarrel* BarrelToSet);
+	void SetTurretMesh(UTankTurret* TurretToSet);
 	
 private:
 	UTankBarrel* Barrel = nullptr;
+	UTankTurret* Turret = nullptr;
 
 	void MoveBarrel(FVector AimDirection);
+	void MoveTurret(FVector AimDirection);
 };

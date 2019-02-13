@@ -4,6 +4,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Public/TankBarrel.h"
+#include "Public/TankTurret.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -21,6 +22,7 @@ void UTankAimingComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 
@@ -53,6 +55,9 @@ void UTankAimingComponent::AimAt(FVector LocationToAimAt, float ProjectileSpeed)
 
 		MoveBarrel(AimDirection);
 
+		if (Turret)
+			MoveTurret(AimDirection);
+
 		//UE_LOG(LogTemp, Warning, TEXT("%s aiming direction is %s (%d)"), *GetOwner()->GetName(), *AimDirection.ToString(), result);
 	}
 
@@ -64,17 +69,32 @@ void UTankAimingComponent::SetBarrelMesh(UTankBarrel * BarrelToSet)
 	Barrel = BarrelToSet;
 }
 
+void UTankAimingComponent::SetTurretMesh(UTankTurret * TurretToSet)
+{
+	Turret = TurretToSet;
+}
+
 void UTankAimingComponent::MoveBarrel(FVector AimDirection)
 {
 	FRotator BarrelRotation;
 
 	auto CurrentBarrelRotation = Barrel->GetForwardVector().Rotation();
 	auto TargetRotation = AimDirection.Rotation();
+	auto DelaRotation = TargetRotation - CurrentBarrelRotation;
 
-	auto DelatRotation = TargetRotation - CurrentBarrelRotation;
-
-	Barrel->Elevate(DelatRotation.Pitch);
+	Barrel->Elevate(DelaRotation.Pitch);
 
 	//UE_LOG(LogTemp, Warning, TEXT("Aim as %s"), *TargetRotation.ToString());
+}
+
+void UTankAimingComponent::MoveTurret(FVector AimDirection)
+{
+	FRotator TurretRotation;
+
+	auto CurrentTurretRotation = Turret->GetForwardVector().Rotation();
+	auto TargetRotation = AimDirection.Rotation();
+	auto DelaRotation = TargetRotation - CurrentTurretRotation;
+
+	Turret->Pan(DelaRotation.Yaw);
 }
 

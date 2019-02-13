@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Public/Tank.h"
-#include "TankAimingComponent.h"
+#include "Public/TankAimingComponent.h"
 
 // Sets default values
 ATank::ATank()
@@ -20,6 +20,11 @@ void ATank::AimAt(FVector Location)
 void ATank::SetBarrelMesh(UTankBarrel * BarrelToSet)
 {
 	TankAimingComponent->SetBarrelMesh(BarrelToSet);
+}
+
+void ATank::SetTurretMesh(UTankTurret * TurretToSet)
+{
+	TankAimingComponent->SetTurretMesh(TurretToSet);
 }
 
 // Called when the game starts or when spawned
