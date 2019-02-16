@@ -28,7 +28,7 @@ ATank * ATankAIController::GetPlayerTank() const
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	ATank* meep = GetControlledTank();
+	/*ATank* meep = GetControlledTank();
 	if (meep) {
 		UE_LOG(LogTemp, Warning, TEXT("Tank, %s, AI Controlled!"), *meep->GetName());
 	}
@@ -41,11 +41,15 @@ void ATankAIController::BeginPlay()
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("Could not find player tank!"));
-	}
+	}*/
 }
 
 void ATankAIController::Tick(float DeltaSeconds)
 {
 	auto targetTank = GetPlayerTank();
-	GetControlledTank()->AimAt(targetTank->GetActorLocation());
+	if (targetTank)
+	{
+		GetControlledTank()->AimAt(targetTank->GetActorLocation());
+		GetControlledTank()->Fire();
+	}
 }

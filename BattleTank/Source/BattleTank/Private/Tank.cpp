@@ -35,14 +35,21 @@ void ATank::SetTurretMesh(UTankTurret * TurretToSet)
 
 void ATank::Fire()
 {
-	if (Barrel)
+	bool IsReadyToFire = (FPlatformTime::Seconds() - LastFiredTimeInSeconds) > ReloadTimeInSeconds;
+
+	//UE_LOG(LogTemp, Warning, TEXT("BANG %f - %f > %f"), FPlatformTime::Seconds(), LastFiredTimeInSeconds, ReloadTimeInSeconds);
+
+	if (Barrel && IsReadyToFire)
 	{
 		FVector Location = Barrel->GetSocketLocation(FName("MuzzleEnd"));
 		FRotator Rotation = Barrel->GetSocketRotation(FName("MuzzleEnd"));
 		AProjectile *NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Location, Rotation);
 		if (NewProjectile)
+		{
 			NewProjectile->LaunchProjectile(LaunchProjectileSpeed);
-		UE_LOG(LogTemp, Warning, TEXT("BANG %s -> %s"), *Rotation.ToString(), *NewProjectile->GetActorRotation().ToString());
+			LastFiredTimeInSeconds = FPlatformTime::Seconds();
+			//UE_LOG(LogTemp, Warning, TEXT("BANG %s -> %s"), *Rotation.ToString(), *NewProjectile->GetActorRotation().ToString());
+		}
 	}
 }
 
