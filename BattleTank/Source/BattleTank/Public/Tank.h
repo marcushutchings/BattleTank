@@ -5,6 +5,7 @@
 class UTankAimingComponent;
 class UTankBarrel;
 class UTankTurret;
+class AProjectile;
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -30,6 +31,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Action)
 		void Fire();
 
+	UPROPERTY(EditAnywhere, Category = Setup)
+		TSubclassOf<AProjectile> ProjectileBlueprint;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -42,4 +46,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Firing)
 		float LaunchProjectileSpeed = 100000.f;
+
+	UTankBarrel* Barrel = nullptr;
 };

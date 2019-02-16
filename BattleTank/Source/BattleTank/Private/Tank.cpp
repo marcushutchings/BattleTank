@@ -2,6 +2,10 @@
 
 #include "Public/Tank.h"
 #include "Public/TankAimingComponent.h"
+#include "Public/TankBarrel.h"
+#include "Public/Projectile.h"
+#include "Engine/World.h"
+
 
 // Sets default values
 ATank::ATank()
@@ -10,6 +14,7 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = true;
 
 	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
+
 }
 
 void ATank::AimAt(FVector Location)
@@ -19,6 +24,7 @@ void ATank::AimAt(FVector Location)
 
 void ATank::SetBarrelMesh(UTankBarrel * BarrelToSet)
 {
+	Barrel = BarrelToSet;
 	TankAimingComponent->SetBarrelMesh(BarrelToSet);
 }
 
@@ -29,7 +35,15 @@ void ATank::SetTurretMesh(UTankTurret * TurretToSet)
 
 void ATank::Fire()
 {
-	UE_LOG(LogTemp, Warning, TEXT("BANG"));
+	if (Barrel)
+	{
+		FVector Location = Barrel->GetSocketLocation(FName("MuzzleEnd"));
+		FRotator Rotation = Barrel->GetSocketRotation(FName("MuzzleEnd"));
+		AProjectile *NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Location, Rotation);
+		if (NewProjectile)
+			NewProjectile->LaunchProjectile(LaunchProjectileSpeed);
+		UE_LOG(LogTemp, Warning, TEXT("BANG %s -> %s"), *Rotation.ToString(), *NewProjectile->GetActorRotation().ToString());
+	}
 }
 
 // Called when the game starts or when spawned
