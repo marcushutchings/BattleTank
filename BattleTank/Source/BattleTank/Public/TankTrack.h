@@ -15,7 +15,7 @@ class BATTLETANK_API UTankTrack : public UStaticMeshComponent
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
-		float TrackMaxDrivingForce = 10.f;
+		float TrackMaxDrivingForceNewtons = 400000.f; // 40,000kg * 10m/s (1g)
 	
 public:
 
