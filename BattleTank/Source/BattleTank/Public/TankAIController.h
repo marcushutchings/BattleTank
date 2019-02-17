@@ -20,6 +20,9 @@ class BATTLETANK_API ATankAIController : public AAIController
 
 	ATank* GetPlayerTank() const;
 
+	UPROPERTY(EditDefaultsOnly)
+		float AcceptanceRadius = 3000.f;
+
 public:
 	virtual void BeginPlay() override;
 
