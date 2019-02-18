@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Marcus Hutchings 2019
 
 #include "Public/TankMovementComponent.h"
 #include "Math/UnrealMathUtility.h"
