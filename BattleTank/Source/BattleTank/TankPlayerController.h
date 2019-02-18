@@ -25,8 +25,6 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 	UPROPERTY(EditDefaultsOnly)
 		float LineTraceRange = 1000000;
 
-	ATank* GetControlledTank() const;
-
 	void AimTowardsCrosshair();
 
 	bool GetSightRayHitLocation(FVector& OutLocationHitInWorldByRay) const;
@@ -34,6 +32,10 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const;
 
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const;
+
+protected:
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+		ATank* GetControlledTank() const;
 
 public:
 	virtual void BeginPlay() override;

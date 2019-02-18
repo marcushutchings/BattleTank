@@ -9,6 +9,14 @@ class UTankTurret;
 #include "Components/ActorComponent.h"
 #include "TankAimingComponent.generated.h"
 
+UENUM()
+enum class EFiringStatus : uint8
+{
+	Reloading,
+	Aiming,
+	Locked
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankAimingComponent : public UActorComponent
 {
@@ -19,6 +27,10 @@ public:
 	UTankAimingComponent();
 
 protected:
+
+	UPROPERTY(BlueprintReadOnly, Category = "State")
+		EFiringStatus FiringStatus = EFiringStatus::Reloading;
+
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
@@ -30,7 +42,7 @@ public:
 
 	void SetBarrelMesh(UTankBarrel* BarrelToSet);
 	void SetTurretMesh(UTankTurret* TurretToSet);
-	
+
 private:
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
