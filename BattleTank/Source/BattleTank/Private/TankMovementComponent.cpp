@@ -27,7 +27,18 @@ void UTankMovementComponent::Initialise(UTankTrack* LeftTrackToSet, UTankTrack* 
 
 void UTankMovementComponent::RequestDirectMove(const FVector & MoveVelocity, bool bForceMaxSpeed)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Request Direct Move %s from %s"), *MoveVelocity.ToString(), *GetOwner()->GetName());
+	//auto MoveWithoutZVal = MoveVelocity;
+	//MoveWithoutZVal.Z = 0.f;
+
+	auto TankForward = GetOwner()->GetActorForwardVector().GetSafeNormal();
+	auto ForwardIntention = MoveVelocity.GetSafeNormal();
+
+	auto ForwardThrow = FVector::DotProduct(TankForward, ForwardIntention);
+	IntendMoveForward(ForwardThrow);
+
+	auto RightIntention = FVector::CrossProduct(TankForward, ForwardIntention).Z;
+	IntendTurnRight(RightIntention);
+	//UE_LOG(LogTemp, Warning, TEXT("Request Direct Move %s:%s from %s"), *TankForward.ToString(), *ForwardIntention.ToString(), *GetOwner()->GetName());
 }
 
 void UTankMovementComponent::IntendMoveForward(float Throw)
