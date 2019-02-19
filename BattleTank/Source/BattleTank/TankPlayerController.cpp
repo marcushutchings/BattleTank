@@ -1,8 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Marcus Hutchings 2019.
 
 #include "TankPlayerController.h"
 #include "Engine/World.h"
 #include "Public/Tank.h"
+#include "Public/TankAimingComponent.h"
 
 ATank* ATankPlayerController::GetControlledTank() const
 {
@@ -86,13 +87,14 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVec
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay!"));
-	ATank* meep = GetControlledTank();
-	if (meep){
-		UE_LOG(LogTemp, Warning, TEXT("Tank, %s, Controlled!"), *meep->GetName());
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("No Tank Controlled!"));
+	auto ControlledTank = GetControlledTank();
+	if (ControlledTank)
+	{
+		auto AimingComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
+		if (AimingComponent)
+			FoundAimingComponent(AimingComponent);
+		else
+			UE_LOG(LogTemp, Error, TEXT("Tank Player Controller could not find Tank Aiming Component."));
 	}
 }
 

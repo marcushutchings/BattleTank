@@ -22,12 +22,6 @@ public:
 
 	void AimAt(FVector Location);
 
-	UFUNCTION(BlueprintCallable, Category = "Setup")
-		void SetBarrelMesh(UTankBarrel* BarrelToSet);
-
-	UFUNCTION(BlueprintCallable, Category = "Setup")
-		void SetTurretMesh(UTankTurret* TurretToSet);
-
 	UFUNCTION(BlueprintCallable, Category = "Action")
 		void Fire();
 
@@ -46,12 +40,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(BlueprintReadOnly)
-		UTankAimingComponent* TankAimingComponent = nullptr;
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+		void initialise(UTankAimingComponent* TankAimingComponentToSet, UTankBarrel* BarrelToSet);
 
-public:	
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+public:
 
+	UTankAimingComponent* TankAimingComponent = nullptr;
 	UTankBarrel* Barrel = nullptr;
 };

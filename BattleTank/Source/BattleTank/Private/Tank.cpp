@@ -12,25 +12,19 @@
 ATank::ATank()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void ATank::AimAt(FVector Location)
 {
-	TankAimingComponent->AimAt(Location, LaunchProjectileSpeed);
-}
-
-void ATank::SetBarrelMesh(UTankBarrel * BarrelToSet)
-{
-	Barrel = BarrelToSet;
-	TankAimingComponent->SetBarrelMesh(BarrelToSet);
-}
-
-void ATank::SetTurretMesh(UTankTurret * TurretToSet)
-{
-	TankAimingComponent->SetTurretMesh(TurretToSet);
+	if (TankAimingComponent)
+	{
+		TankAimingComponent->AimAt(Location, LaunchProjectileSpeed);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("TankAiming Component is missing on %s"), *GetOwner()->GetName());
+	}
 }
 
 void ATank::Fire()
@@ -57,14 +51,12 @@ void ATank::Fire()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	PrimaryActorTick.bCanEverTick = false;
+	//PrimaryActorTick.bCanEverTick = false;
 }
 
-// Called to bind functionality to input
-void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ATank::initialise(UTankAimingComponent * TankAimingComponentToSet, UTankBarrel * BarrelToSet)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	TankAimingComponent = TankAimingComponentToSet;
+	Barrel = BarrelToSet;
 }
 

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Marcus Hutchings 2019.
 
 #pragma once
 
@@ -34,14 +34,17 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+		void SetBarrelMesh(UTankBarrel* BarrelToSet);
+
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+		void SetTurretMesh(UTankTurret* TurretToSet);
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void AimAt(FVector Location, float ProjectileSpeed);
-
-	void SetBarrelMesh(UTankBarrel* BarrelToSet);
-	void SetTurretMesh(UTankTurret* TurretToSet);
 
 private:
 	UTankBarrel* Barrel = nullptr;
