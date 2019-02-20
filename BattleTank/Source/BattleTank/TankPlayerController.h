@@ -26,6 +26,8 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 	UPROPERTY(EditDefaultsOnly)
 		float LineTraceRange = 1000000;
 
+	UTankAimingComponent* AimingComponent = nullptr;
+
 	void AimTowardsCrosshair();
 
 	bool GetSightRayHitLocation(FVector& OutLocationHitInWorldByRay) const;

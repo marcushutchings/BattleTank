@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "TankAIController.h"
-#include "../Public/TankAIController.h"
+#include "Public/TankAIController.h"
 #include "Engine/World.h"
 #include "Public/Tank.h"
+#include "Public/TankAimingComponent.h"
 
 
 ATank* ATankAIController::GetControlledTank() const
@@ -28,29 +28,21 @@ ATank * ATankAIController::GetPlayerTank() const
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	/*ATank* meep = GetControlledTank();
-	if (meep) {
-		UE_LOG(LogTemp, Warning, TEXT("Tank, %s, AI Controlled!"), *meep->GetName());
+
+	auto ControlledTank = GetControlledTank();
+	if (ControlledTank)
+	{
+		AimingComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
 	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("No Tank AI Controlled!"));
-	}
-	ATank* playeyTank = GetPlayerTank();
-	if (playeyTank) {
-		UE_LOG(LogTemp, Warning, TEXT("Found Player Tank, %s!"), *playeyTank->GetName());
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("Could not find player tank!"));
-	}*/
 }
 
 void ATankAIController::Tick(float DeltaSeconds)
 {
 	auto targetTank = GetPlayerTank();
-	if (targetTank)
+	if (targetTank && ensure(AimingComponent))
 	{
 		MoveToActor(targetTank, AcceptanceRadius);
-		GetControlledTank()->AimAt(targetTank->GetActorLocation());
+		AimingComponent->AimAt(targetTank->GetActorLocation());
 		GetControlledTank()->Fire();
 	}
 }

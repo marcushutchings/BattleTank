@@ -3,6 +3,7 @@
 #pragma once
 
 class ATank;
+class UTankAimingComponent;
 
 #include "CoreMinimal.h"
 #include "AIController.h"
@@ -22,6 +23,8 @@ class BATTLETANK_API ATankAIController : public AAIController
 
 	UPROPERTY(EditDefaultsOnly)
 		float AcceptanceRadius = 3000.f;
+
+	UTankAimingComponent* AimingComponent = nullptr;
 
 public:
 	virtual void BeginPlay() override;

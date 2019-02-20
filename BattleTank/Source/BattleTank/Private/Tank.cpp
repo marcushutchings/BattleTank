@@ -14,18 +14,6 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void ATank::AimAt(FVector Location)
-{
-	if (TankAimingComponent)
-	{
-		TankAimingComponent->AimAt(Location, LaunchProjectileSpeed);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("TankAiming Component is missing on %s"), *GetOwner()->GetName());
-	}
-}
-
 void ATank::Fire()
 {
 	bool IsReadyToFire = (FPlatformTime::Seconds() - LastFiredTimeInSeconds) > ReloadTimeInSeconds;
@@ -52,7 +40,6 @@ void ATank::BeginPlay()
 	Super::BeginPlay();
 	//PrimaryActorTick.bCanEverTick = false;
 
-	TankAimingComponent = FindComponentByClass<UTankAimingComponent>();
 	Barrel = FindComponentByClass<UTankBarrel>();
 }
 

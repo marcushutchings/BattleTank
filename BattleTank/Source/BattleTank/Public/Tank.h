@@ -2,7 +2,6 @@
 
 #pragma once
 
-class UTankAimingComponent;
 class UTankBarrel;
 class UTankTurret;
 class AProjectile;
@@ -19,8 +18,6 @@ class BATTLETANK_API ATank : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ATank();
-
-	void AimAt(FVector Location);
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
 		void Fire();
@@ -41,7 +38,5 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-
-	UTankAimingComponent* TankAimingComponent = nullptr;
 	UTankBarrel* Barrel = nullptr;
 };

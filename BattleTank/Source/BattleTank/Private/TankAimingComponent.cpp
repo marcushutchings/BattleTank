@@ -29,7 +29,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UTankAimingComponent::AimAt(FVector LocationToAimAt, float ProjectileSpeed)
+void UTankAimingComponent::AimAt(FVector LocationToAimAt)
 {
 	if (Barrel)
 	{
@@ -41,7 +41,7 @@ void UTankAimingComponent::AimAt(FVector LocationToAimAt, float ProjectileSpeed)
 			SuggestedProjectileVelocity,
 			Barrel->GetSocketLocation(FName("MuzzleEnd")),
 			LocationToAimAt,
-			ProjectileSpeed,
+			LaunchProjectileSpeed,
 			false,
 			0.f,
 			0.f,

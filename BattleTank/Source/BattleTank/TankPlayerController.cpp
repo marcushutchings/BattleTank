@@ -12,12 +12,12 @@ ATank* ATankPlayerController::GetControlledTank() const
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (GetControlledTank())
+	if (GetControlledTank() && ensure(AimingComponent))
 	{
 		FVector HitLocation;
 		if (GetSightRayHitLocation(HitLocation))
 		{
-			GetControlledTank()->AimAt(HitLocation);
+			AimingComponent->AimAt(HitLocation);
 			//UE_LOG(LogTemp, Warning, TEXT("Line trace hit location: %s"), *HitLocation.ToString());
 		}
 	}
@@ -90,7 +90,7 @@ void ATankPlayerController::BeginPlay()
 	auto ControlledTank = GetControlledTank();
 	if (ControlledTank)
 	{
-		auto AimingComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
+		AimingComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
 		if (AimingComponent)
 			FoundAimingComponent(AimingComponent);
 		else
