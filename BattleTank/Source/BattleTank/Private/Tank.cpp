@@ -51,11 +51,9 @@ void ATank::BeginPlay()
 {
 	Super::BeginPlay();
 	//PrimaryActorTick.bCanEverTick = false;
+
+	TankAimingComponent = FindComponentByClass<UTankAimingComponent>();
+	Barrel = FindComponentByClass<UTankBarrel>();
 }
 
-void ATank::initialise(UTankAimingComponent * TankAimingComponentToSet, UTankBarrel * BarrelToSet)
-{
-	TankAimingComponent = TankAimingComponentToSet;
-	Barrel = BarrelToSet;
-}
 

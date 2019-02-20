@@ -80,8 +80,6 @@ void UTankAimingComponent::MoveBarrel(FVector AimDirection)
 	auto DelaRotation = TargetRotation - CurrentBarrelRotation;
 
 	Barrel->Elevate(DelaRotation.Pitch);
-
-	//UE_LOG(LogTemp, Warning, TEXT("Aim as %s"), *TargetRotation.ToString());
 }
 
 void UTankAimingComponent::MoveTurret(FVector AimDirection)

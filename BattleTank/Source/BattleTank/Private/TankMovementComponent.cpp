@@ -27,9 +27,6 @@ void UTankMovementComponent::Initialise(UTankTrack* LeftTrackToSet, UTankTrack* 
 
 void UTankMovementComponent::RequestDirectMove(const FVector & MoveVelocity, bool bForceMaxSpeed)
 {
-	//auto MoveWithoutZVal = MoveVelocity;
-	//MoveWithoutZVal.Z = 0.f;
-
 	auto TankForward = GetOwner()->GetActorForwardVector().GetSafeNormal();
 	auto ForwardIntention = MoveVelocity.GetSafeNormal();
 

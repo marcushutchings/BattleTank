@@ -31,6 +31,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 		EFiringStatus FiringStatus = EFiringStatus::Reloading;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+		float LaunchProjectileSpeed = 10000.f;
+
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
