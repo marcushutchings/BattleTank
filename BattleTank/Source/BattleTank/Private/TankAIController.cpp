@@ -6,11 +6,6 @@
 #include "Public/TankAimingComponent.h"
 
 
-ATank* ATankAIController::GetControlledTank() const
-{
-	return Cast<ATank>(GetPawn());
-}
-
 ATank * ATankAIController::GetPlayerTank() const
 {
 	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
@@ -28,12 +23,7 @@ ATank * ATankAIController::GetPlayerTank() const
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto ControlledTank = GetControlledTank();
-	if (ControlledTank)
-	{
-		AimingComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
-	}
+	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 }
 
 void ATankAIController::Tick(float DeltaSeconds)
@@ -43,6 +33,6 @@ void ATankAIController::Tick(float DeltaSeconds)
 	{
 		MoveToActor(targetTank, AcceptanceRadius);
 		AimingComponent->AimAt(targetTank->GetActorLocation());
-		GetControlledTank()->Fire();
+		AimingComponent->Fire();
 	}
 }

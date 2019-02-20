@@ -2,24 +2,49 @@
 
 #include "Public/TankAimingComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Public/TankBarrel.h"
 #include "Public/TankTurret.h"
+#include "Public/Projectile.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
+
+void UTankAimingComponent::Fire()
+{
+	bool IsReadyToFire = (FPlatformTime::Seconds() - LastFiredTimeInSeconds) > ReloadTimeInSeconds;
+
+	//UE_LOG(LogTemp, Warning, TEXT("BANG %f - %f > %f"), FPlatformTime::Seconds(), LastFiredTimeInSeconds, ReloadTimeInSeconds);
+
+	if (Barrel && IsReadyToFire)
+	{
+		FVector Location = Barrel->GetSocketLocation(FName("MuzzleEnd"));
+		FRotator Rotation = Barrel->GetSocketRotation(FName("MuzzleEnd"));
+		AProjectile *NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Location, Rotation);
+		if (NewProjectile)
+		{
+			NewProjectile->LaunchProjectile(LaunchProjectileSpeed);
+			LastFiredTimeInSeconds = FPlatformTime::Seconds();
+			//UE_LOG(LogTemp, Warning, TEXT("BANG %s -> %s"), *Rotation.ToString(), *NewProjectile->GetActorRotation().ToString());
+		}
+	}
+}
 
 // Called when the game starts
 void UTankAimingComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	PrimaryComponentTick.bCanEverTick = false;
+
+	Barrel = GetOwner()->FindComponentByClass<UTankBarrel>();
+	Turret = GetOwner()->FindComponentByClass<UTankTurret>();
 }
 
 
@@ -59,16 +84,6 @@ void UTankAimingComponent::AimAt(FVector LocationToAimAt)
 	}
 
 	//UE_LOG(LogTemp, Warning, TEXT("%s has barrel %s"), *GetName(), *Barrel->Positi->GetName());
-}
-
-void UTankAimingComponent::SetBarrelMesh(UTankBarrel * BarrelToSet)
-{
-	Barrel = BarrelToSet;
-}
-
-void UTankAimingComponent::SetTurretMesh(UTankTurret * TurretToSet)
-{
-	Turret = TurretToSet;
 }
 
 void UTankAimingComponent::MoveBarrel(FVector AimDirection)

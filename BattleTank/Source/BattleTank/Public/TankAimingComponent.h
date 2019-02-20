@@ -2,6 +2,7 @@
 
 #pragma once
 
+class AProjectile;
 class UTankBarrel;
 class UTankTurret;
 
@@ -28,28 +29,34 @@ public:
 
 protected:
 
-	UPROPERTY(BlueprintReadOnly, Category = "State")
-		EFiringStatus FiringStatus = EFiringStatus::Reloading;
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+		TSubclassOf<AProjectile> ProjectileBlueprint;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 		float LaunchProjectileSpeed = 10000.f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+		double ReloadTimeInSeconds = 3.f;
+
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintCallable, Category = "Setup")
-		void SetBarrelMesh(UTankBarrel* BarrelToSet);
-
-	UFUNCTION(BlueprintCallable, Category = "Setup")
-		void SetTurretMesh(UTankTurret* TurretToSet);
-
 public:	
+
+	UPROPERTY(BlueprintReadOnly, Category = "State")
+		EFiringStatus FiringStatus = EFiringStatus::Reloading;
+
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void AimAt(FVector Location);
 
+	UFUNCTION(BlueprintCallable, Category = "Action")
+		void Fire();
+
 private:
+	double LastFiredTimeInSeconds = 0.f;
+
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
 
