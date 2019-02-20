@@ -2,7 +2,6 @@
 
 #pragma once
 
-class ATank;
 class UTankAimingComponent;
 
 #include "CoreMinimal.h"
@@ -17,7 +16,7 @@ class BATTLETANK_API ATankAIController : public AAIController
 {
 	GENERATED_BODY()
 	
-	ATank* GetPlayerTank() const;
+	APawn* GetPlayerTank() const;
 
 	UPROPERTY(EditDefaultsOnly)
 		float AcceptanceRadius = 3000.f;

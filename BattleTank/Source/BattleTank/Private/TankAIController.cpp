@@ -6,16 +6,12 @@
 #include "Public/TankAimingComponent.h"
 
 
-ATank * ATankAIController::GetPlayerTank() const
+APawn * ATankAIController::GetPlayerTank() const
 {
 	APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 	if (playerController)
 	{
-		APawn* activePawn = playerController->GetPawn();
-		if (activePawn)
-		{
-			return Cast<ATank>(activePawn);
-		}
+		return playerController->GetPawn();
 	}
 	return nullptr;
 }

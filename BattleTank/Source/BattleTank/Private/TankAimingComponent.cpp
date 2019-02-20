@@ -3,7 +3,6 @@
 #include "Public/TankAimingComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/World.h"
-#include "Kismet/GameplayStatics.h"
 #include "Public/TankBarrel.h"
 #include "Public/TankTurret.h"
 #include "Public/Projectile.h"
@@ -13,17 +12,17 @@ UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	//PrimaryComponentTick.bCanEverTick = true;
 }
 
 
 void UTankAimingComponent::Fire()
 {
-	bool IsReadyToFire = (FPlatformTime::Seconds() - LastFiredTimeInSeconds) > ReloadTimeInSeconds;
-
+	if (!ensure(Barrel)) { return; }
+	
 	//UE_LOG(LogTemp, Warning, TEXT("BANG %f - %f > %f"), FPlatformTime::Seconds(), LastFiredTimeInSeconds, ReloadTimeInSeconds);
 
-	if (Barrel && IsReadyToFire)
+	if ( FiringStatus != EFiringStatus::Reloading )
 	{
 		FVector Location = Barrel->GetSocketLocation(FName("MuzzleEnd"));
 		FRotator Rotation = Barrel->GetSocketRotation(FName("MuzzleEnd"));
@@ -31,7 +30,7 @@ void UTankAimingComponent::Fire()
 		if (NewProjectile)
 		{
 			NewProjectile->LaunchProjectile(LaunchProjectileSpeed);
-			LastFiredTimeInSeconds = FPlatformTime::Seconds();
+			LastFiredTimeInSeconds = GetWorld()->GetTimeSeconds();
 			//UE_LOG(LogTemp, Warning, TEXT("BANG %s -> %s"), *Rotation.ToString(), *NewProjectile->GetActorRotation().ToString());
 		}
 	}
@@ -40,11 +39,13 @@ void UTankAimingComponent::Fire()
 // Called when the game starts
 void UTankAimingComponent::BeginPlay()
 {
+	PrimaryComponentTick.bCanEverTick = true;
 	Super::BeginPlay();
-	PrimaryComponentTick.bCanEverTick = false;
 
 	Barrel = GetOwner()->FindComponentByClass<UTankBarrel>();
 	Turret = GetOwner()->FindComponentByClass<UTankTurret>();
+
+	LastFiredTimeInSeconds = GetWorld()->GetTimeSeconds();
 }
 
 
@@ -52,6 +53,15 @@ void UTankAimingComponent::BeginPlay()
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// FPlatformTime::Seconds() is an option...
+	bool IsReadyToFire = (GetWorld()->GetTimeSeconds() - LastFiredTimeInSeconds) > ReloadTimeInSeconds;
+	if (!IsReadyToFire)
+		FiringStatus = EFiringStatus::Reloading;
+	else if (IsBarrelMoving())
+		FiringStatus = EFiringStatus::Aiming;
+	else
+		FiringStatus = EFiringStatus::Locked;
 }
 
 void UTankAimingComponent::AimAt(FVector LocationToAimAt)
@@ -73,7 +83,7 @@ void UTankAimingComponent::AimAt(FVector LocationToAimAt)
 			ESuggestProjVelocityTraceOption::DoNotTrace
 		);
 
-		auto AimDirection = SuggestedProjectileVelocity.GetSafeNormal();
+		AimDirection = SuggestedProjectileVelocity.GetSafeNormal();
 
 		MoveBarrel(AimDirection);
 
@@ -106,5 +116,13 @@ void UTankAimingComponent::MoveTurret(FVector AimDirection)
 	auto DelaRotation = TargetRotation - CurrentTurretRotation;
 
 	Turret->Pan(DelaRotation.Yaw);
+}
+
+bool UTankAimingComponent::IsBarrelMoving()
+{
+	if (ensure(Barrel))
+		return !AimDirection.Equals(Barrel->GetForwardVector(), 0.01);
+	else
+		return false;
 }
 

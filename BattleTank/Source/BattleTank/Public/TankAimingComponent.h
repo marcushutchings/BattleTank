@@ -8,6 +8,7 @@ class UTankTurret;
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "TankAimingComponent.generated.h"
 
 UENUM()
@@ -60,6 +61,10 @@ private:
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
 
+	FVector AimDirection;
+
 	void MoveBarrel(FVector AimDirection);
 	void MoveTurret(FVector AimDirection);
+
+	bool IsBarrelMoving();
 };

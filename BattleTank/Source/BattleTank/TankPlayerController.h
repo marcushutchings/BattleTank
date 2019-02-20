@@ -2,7 +2,6 @@
 
 #pragma once
 
-class ATank;
 class UTankAimingComponent;
 
 #include "CoreMinimal.h"
