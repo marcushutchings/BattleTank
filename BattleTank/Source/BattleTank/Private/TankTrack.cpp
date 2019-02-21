@@ -4,6 +4,17 @@
 #include "Engine/World.h"
 #include "Math/UnrealMathUtility.h"
 
+UTankTrack::UTankTrack()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+}
+
+void UTankTrack::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	CorrectTrackSideWaysVelocity(DeltaTime);
+}
+
 void UTankTrack::SetThrottle(float Throttle)
 {
 	auto ClampedThrottle = FMath::Clamp<float>(Throttle, 0.f, 1.f);
@@ -13,5 +24,22 @@ void UTankTrack::SetThrottle(float Throttle)
 	auto ForceLocation = GetComponentLocation();
 	auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
 	TankRoot->AddForceAtLocation(ForceApplied, ForceLocation);
+}
+
+void UTankTrack::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void UTankTrack::CorrectTrackSideWaysVelocity(float DeltaTime)
+{
+	auto SlippageSpeed = FVector::DotProduct(GetRightVector(), GetComponentVelocity());
+	auto CorrectionAcceleration = (-SlippageSpeed / DeltaTime) * GetRightVector();
+	auto TankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent());
+	if (ensure(TankRoot))
+	{
+		auto CorrectionForce = TankRoot->GetMass() * CorrectionAcceleration *0.5f;
+		TankRoot->AddForce(CorrectionForce);
+	}
 }
 
