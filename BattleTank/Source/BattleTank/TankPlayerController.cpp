@@ -37,7 +37,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector & HitLocation) const
 	}
 
 	//UE_LOG(LogTemp, Warning, TEXT("Aim point is %s %d!"), *LookDirection.ToString(), result);
-	UE_LOG(LogTemp, Warning, TEXT("Aim point is %s %d!"), *HitLocation.ToString(), result);
+	//UE_LOG(LogTemp, Warning, TEXT("Aim point is %s %d!"), *HitLocation.ToString(), result);
 
 	return result;
 }
