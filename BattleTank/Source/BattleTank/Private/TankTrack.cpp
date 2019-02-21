@@ -6,21 +6,23 @@
 
 UTankTrack::UTankTrack()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UTankTrack::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	CorrectTrackSideWaysVelocity(DeltaTime);
+	//CorrectTrackSideWaysVelocity(DeltaTime);
 }
 
 void UTankTrack::SetThrottle(float Throttle)
 {
-	auto ClampedThrottle = FMath::Clamp<float>(Throttle, 0.f, 1.f);
-	//UE_LOG(LogTemp, Warning, TEXT("Throttle set to %f: %f"), ClampedThrottle, GetWorld()->GetTimeSeconds());
+	CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -0.7f, 1.f);;
+}
 
-	auto ForceApplied = GetForwardVector() * Throttle * TrackMaxDrivingForceNewtons;
+void UTankTrack::DriveTrack()
+{
+	auto ForceApplied = GetForwardVector() * CurrentThrottle * TrackMaxDrivingForceNewtons;
 	auto ForceLocation = GetComponentLocation();
 	auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
 	TankRoot->AddForceAtLocation(ForceApplied, ForceLocation);
@@ -29,11 +31,13 @@ void UTankTrack::SetThrottle(float Throttle)
 void UTankTrack::BeginPlay()
 {
 	Super::BeginPlay();
+	OnComponentHit.AddDynamic(this, &UTankTrack::OnHit);
 }
 
-void UTankTrack::CorrectTrackSideWaysVelocity(float DeltaTime)
+void UTankTrack::CorrectTrackSideWaysVelocity()
 {
 	auto SlippageSpeed = FVector::DotProduct(GetRightVector(), GetComponentVelocity());
+	auto DeltaTime = GetWorld()->GetDeltaSeconds();
 	auto CorrectionAcceleration = (-SlippageSpeed / DeltaTime) * GetRightVector();
 	auto TankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent());
 	if (ensure(TankRoot))
@@ -41,5 +45,13 @@ void UTankTrack::CorrectTrackSideWaysVelocity(float DeltaTime)
 		auto CorrectionForce = TankRoot->GetMass() * CorrectionAcceleration *0.5f;
 		TankRoot->AddForce(CorrectionForce);
 	}
+}
+
+void UTankTrack::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+{
+	DriveTrack();
+	CorrectTrackSideWaysVelocity();
+	CurrentThrottle = 0.f;
+	//UE_LOG(LogTemp, Warning, TEXT("I'm hit, I'm hit"))
 }
 

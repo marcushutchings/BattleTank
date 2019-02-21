@@ -22,6 +22,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Input")
 		void SetThrottle(float Throttle);
+
+	void DriveTrack();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -31,5 +33,10 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	void CorrectTrackSideWaysVelocity(float DeltaTime);
+	float CurrentThrottle = 0.f;
+
+	void CorrectTrackSideWaysVelocity();
+
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 };
