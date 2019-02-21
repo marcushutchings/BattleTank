@@ -83,12 +83,13 @@ void UTankAimingComponent::AimAt(FVector LocationToAimAt)
 			ESuggestProjVelocityTraceOption::DoNotTrace
 		);
 
-		AimDirection = SuggestedProjectileVelocity.GetSafeNormal();
-
-		MoveBarrel(AimDirection);
-
-		if (Turret)
-			MoveTurret(AimDirection);
+		if (result)
+		{
+			AimDirection = SuggestedProjectileVelocity.GetSafeNormal();
+			MoveBarrel(AimDirection);
+			if (Turret)
+				MoveTurret(AimDirection);
+		}
 
 		//UE_LOG(LogTemp, Warning, TEXT("%s aiming direction is %s (%d)"), *GetOwner()->GetName(), *AimDirection.ToString(), result);
 	}
@@ -115,7 +116,10 @@ void UTankAimingComponent::MoveTurret(FVector AimDirection)
 	auto TargetRotation = AimDirection.Rotation();
 	auto DelaRotation = TargetRotation - CurrentTurretRotation;
 
-	Turret->Pan(DelaRotation.Yaw);
+	if (FMath::Abs(DelaRotation.Yaw) < 180.f)
+		Turret->Pan(DelaRotation.Yaw);
+	else 
+		Turret->Pan(-DelaRotation.Yaw);
 }
 
 bool UTankAimingComponent::IsBarrelMoving()
