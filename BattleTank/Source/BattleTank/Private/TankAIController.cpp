@@ -29,6 +29,7 @@ void ATankAIController::Tick(float DeltaSeconds)
 	{
 		MoveToActor(targetTank, AcceptanceRadius);
 		AimingComponent->AimAt(targetTank->GetActorLocation());
+		UE_LOG(LogTemp, Warning, TEXT("Battel mode %d"), AimingComponent->GetFiringStatus());
 		if (AimingComponent->GetFiringStatus() == EFiringStatus::Locked)
 			AimingComponent->Fire();
 	}
