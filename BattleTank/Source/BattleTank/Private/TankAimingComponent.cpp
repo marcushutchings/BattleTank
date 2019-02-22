@@ -12,7 +12,7 @@ UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	//PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 
@@ -20,7 +20,7 @@ void UTankAimingComponent::Fire()
 {
 	if (!ensure(Barrel)) { return; }
 	
-	UE_LOG(LogTemp, Warning, TEXT("BANG %f - %f > %f"), FPlatformTime::Seconds(), LastFiredTimeInSeconds, ReloadTimeInSeconds);
+	//UE_LOG(LogTemp, Warning, TEXT("BANG %f - %f > %f"), FPlatformTime::Seconds(), LastFiredTimeInSeconds, ReloadTimeInSeconds);
 
 	if (CanFire())
 	{
@@ -50,8 +50,8 @@ EFiringStatus UTankAimingComponent::GetFiringStatus() const
 // Called when the game starts
 void UTankAimingComponent::BeginPlay()
 {
-	PrimaryComponentTick.bCanEverTick = true;
 	Super::BeginPlay();
+	//PrimaryComponentTick.bCanEverTick = true;
 
 	Barrel = GetOwner()->FindComponentByClass<UTankBarrel>();
 	Turret = GetOwner()->FindComponentByClass<UTankTurret>();
@@ -65,6 +65,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	//UE_LOG(LogTemp, Warning, TEXT("State %s"), *GetOwner()->GetName());
 	if (CurrentAmmunition > 0)
 	{
 		// FPlatformTime::Seconds() is an option...
