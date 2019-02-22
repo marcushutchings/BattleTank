@@ -60,7 +60,7 @@ public:
 		void Fire();
 
 	UFUNCTION(BlueprintCallable, Category = "State")
-		int32 GetCurrentAmmunition();
+		int32 GetCurrentAmmunition() const;
 
 	UFUNCTION(BlueprintCallable, Category = "State")
 		EFiringStatus GetFiringStatus() const;
