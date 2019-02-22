@@ -16,7 +16,8 @@ enum class EFiringStatus : uint8
 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	OutOfAmmo
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -39,14 +40,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 		double ReloadTimeInSeconds = 3.f;
 
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:	
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+		int32 CurrentAmmunition = 10;
 
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 		EFiringStatus FiringStatus = EFiringStatus::Reloading;
 
+
+	// Called when the game starts
+	virtual void BeginPlay() override;
+
+public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -55,8 +59,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Action")
 		void Fire();
 
+	UFUNCTION(BlueprintCallable, Category = "State")
+		int32 GetCurrentAmmunition();
+
+	UFUNCTION(BlueprintCallable, Category = "State")
+		EFiringStatus GetFiringStatus() const;
+
 private:
-	double LastFiredTimeInSeconds = 0.f;
+	float LastFiredTimeInSeconds = 0.f;
 
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
@@ -67,4 +77,5 @@ private:
 	void MoveTurret(FVector AimDirection);
 
 	bool IsBarrelMoving();
+	bool CanFire();
 };

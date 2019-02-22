@@ -18,10 +18,11 @@ class BATTLETANK_API ATankAIController : public AAIController
 	
 	APawn* GetPlayerTank() const;
 
+	UTankAimingComponent* AimingComponent = nullptr;
+
+protected:
 	UPROPERTY(EditDefaultsOnly)
 		float AcceptanceRadius = 3000.f;
-
-	UTankAimingComponent* AimingComponent = nullptr;
 
 public:
 	virtual void BeginPlay() override;

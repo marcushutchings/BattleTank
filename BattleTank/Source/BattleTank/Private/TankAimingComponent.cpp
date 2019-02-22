@@ -22,7 +22,7 @@ void UTankAimingComponent::Fire()
 	
 	//UE_LOG(LogTemp, Warning, TEXT("BANG %f - %f > %f"), FPlatformTime::Seconds(), LastFiredTimeInSeconds, ReloadTimeInSeconds);
 
-	if ( FiringStatus != EFiringStatus::Reloading )
+	if (CanFire())
 	{
 		FVector Location = Barrel->GetSocketLocation(FName("MuzzleEnd"));
 		FRotator Rotation = Barrel->GetSocketRotation(FName("MuzzleEnd"));
@@ -33,7 +33,18 @@ void UTankAimingComponent::Fire()
 			LastFiredTimeInSeconds = GetWorld()->GetTimeSeconds();
 			//UE_LOG(LogTemp, Warning, TEXT("BANG %s -> %s"), *Rotation.ToString(), *NewProjectile->GetActorRotation().ToString());
 		}
+		CurrentAmmunition--;
 	}
+}
+
+int32 UTankAimingComponent::GetCurrentAmmunition()
+{
+	return CurrentAmmunition;
+}
+
+EFiringStatus UTankAimingComponent::GetFiringStatus() const
+{
+	return FiringStatus;
 }
 
 // Called when the game starts
@@ -54,14 +65,19 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// FPlatformTime::Seconds() is an option...
-	bool IsReadyToFire = (GetWorld()->GetTimeSeconds() - LastFiredTimeInSeconds) > ReloadTimeInSeconds;
-	if (!IsReadyToFire)
-		FiringStatus = EFiringStatus::Reloading;
-	else if (IsBarrelMoving())
-		FiringStatus = EFiringStatus::Aiming;
+	if (CurrentAmmunition > 0)
+	{
+		// FPlatformTime::Seconds() is an option...
+		bool IsReadyToFire = (GetWorld()->GetTimeSeconds() - LastFiredTimeInSeconds) > ReloadTimeInSeconds;
+		if (!IsReadyToFire)
+			FiringStatus = EFiringStatus::Reloading;
+		else if (IsBarrelMoving())
+			FiringStatus = EFiringStatus::Aiming;
+		else
+			FiringStatus = EFiringStatus::Locked;
+	}
 	else
-		FiringStatus = EFiringStatus::Locked;
+		FiringStatus = EFiringStatus::OutOfAmmo;
 }
 
 void UTankAimingComponent::AimAt(FVector LocationToAimAt)
@@ -128,5 +144,10 @@ bool UTankAimingComponent::IsBarrelMoving()
 		return !AimDirection.Equals(Barrel->GetForwardVector(), 0.01);
 	else
 		return false;
+}
+
+bool UTankAimingComponent::CanFire()
+{
+	return (FiringStatus != EFiringStatus::Reloading && FiringStatus != EFiringStatus::OutOfAmmo);
 }
 
