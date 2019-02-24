@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Public/Tank.h"
+#include "Math/UnrealMathUtility.h"
 
 // Sets default values
 ATank::ATank()
@@ -16,4 +17,14 @@ void ATank::BeginPlay()
 	//PrimaryActorTick.bCanEverTick = false;
 }
 
-
+float ATank::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	float DamageToApply = FMath::Clamp(DamageAmount, 0.f, TankDamageCapacity);
+	if (TankDamageCapacity > 0.f)
+	{
+		TankDamageCapacity -= DamageAmount;
+		if (TankDamageCapacity <= 0.f)
+			UE_LOG(LogTemp, Warning, TEXT("Tank is DEAD"));
+	}
+	return DamageToApply;
+}
