@@ -16,6 +16,11 @@ APawn * ATankAIController::GetPlayerTank() const
 	return nullptr;
 }
 
+void ATankAIController::OnTankDeath()
+{
+	UE_LOG(LogTemp, Warning, TEXT("AI Tank is DEAD"));
+}
+
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -32,5 +37,19 @@ void ATankAIController::Tick(float DeltaSeconds)
 		//UE_LOG(LogTemp, Warning, TEXT("Battel mode %d"), (uint8)AimingComponent->GetFiringStatus());
 		if (AimingComponent->GetFiringStatus() == EFiringStatus::Locked)
 			AimingComponent->Fire();
+	}
+}
+
+void ATankAIController::SetPawn(APawn * InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	if (InPawn)
+	{
+		auto TankToPossess = Cast<ATank>(InPawn);
+		if (TankToPossess)
+		{
+			TankToPossess->OnTankDeath.AddUniqueDynamic(this, &ATankAIController::OnTankDeath);
+		}
 	}
 }

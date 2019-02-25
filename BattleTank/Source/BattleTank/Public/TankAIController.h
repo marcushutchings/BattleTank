@@ -16,9 +16,12 @@ class BATTLETANK_API ATankAIController : public AAIController
 {
 	GENERATED_BODY()
 	
+	UTankAimingComponent* AimingComponent = nullptr;
+
 	APawn* GetPlayerTank() const;
 
-	UTankAimingComponent* AimingComponent = nullptr;
+	UFUNCTION()
+		void OnTankDeath();
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -28,4 +31,6 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void SetPawn(APawn* InPawn) override;
 };
