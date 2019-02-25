@@ -18,7 +18,12 @@ APawn * ATankAIController::GetPlayerTank() const
 
 void ATankAIController::OnTankDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("AI Tank is DEAD"));
+	auto PossessedPawn = GetPawn();
+	if (PossessedPawn)
+	{
+		PossessedPawn->DetachFromControllerPendingDestroy();
+	}
+	//UE_LOG(LogTemp, Warning, TEXT("AI Tank is DEAD"));
 }
 
 void ATankAIController::BeginPlay()

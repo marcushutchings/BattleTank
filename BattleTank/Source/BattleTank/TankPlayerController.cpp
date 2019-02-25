@@ -82,7 +82,9 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVec
 
 void ATankPlayerController::OnTankDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Player Tank Died"));
+	controlsActive = false;
+	StartSpectatingOnly();
+	//UE_LOG(LogTemp, Warning, TEXT("Player Tank Died"));
 }
 
 void ATankPlayerController::BeginPlay()
@@ -99,7 +101,9 @@ void ATankPlayerController::BeginPlay()
 void ATankPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	AimTowardsCrosshair();
+
+	if (controlsActive)
+		AimTowardsCrosshair();
 }
 
 void ATankPlayerController::SetPawn(APawn * InPawn)
@@ -111,6 +115,7 @@ void ATankPlayerController::SetPawn(APawn * InPawn)
 		auto TankToPossess = Cast<ATank>(InPawn);
 		if (TankToPossess)
 		{
+			controlsActive = true;
 			TankToPossess->OnTankDeath.AddUniqueDynamic(this, &ATankPlayerController::OnTankDeath);
 		}
 	}

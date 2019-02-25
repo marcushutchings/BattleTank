@@ -25,6 +25,8 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 	UPROPERTY(EditDefaultsOnly)
 		float LineTraceRange = 1000000;
 
+	bool controlsActive = false;
+
 	UTankAimingComponent* AimingComponent = nullptr;
 
 	void AimTowardsCrosshair();
