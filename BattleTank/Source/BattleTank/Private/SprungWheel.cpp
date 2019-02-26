@@ -13,15 +13,9 @@ ASprungWheel::ASprungWheel()
 	Spring = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Spring Physics Constraint"));
 	SetRootComponent(Spring);
 
-	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Body Mesh"));
-	BodyMesh->SetSimulatePhysics(true);
-	BodyMesh->SetupAttachment(Spring);
-
 	WheelMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Wheel Mesh"));
-	WheelMesh->SetSimulatePhysics(true);
+	//WheelMesh->SetSimulatePhysics(true);
 	WheelMesh->SetupAttachment(Spring);
-
-
 
 	// Prevent any angular momentum
 	Spring->SetAngularSwing1Limit(EAngularConstraintMotion::ACM_Locked, 0.f);
@@ -37,8 +31,6 @@ ASprungWheel::ASprungWheel()
 	Spring->SetLinearXLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
 	Spring->SetLinearYLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
 	Spring->SetLinearZLimit(ELinearConstraintMotion::LCM_Free, 0.f);
-
-	//Spring->SetConstrainedComponents(BodyMesh, NAME_None, WheelMesh, NAME_None);
 }
 
 // Called when the game starts or when spawned
@@ -48,10 +40,9 @@ void ASprungWheel::BeginPlay()
 	
 	if (GetAttachParentActor())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("NOT NULL %s"), *GetAttachParentActor()->GetName());
+		auto TankBody = Cast<UStaticMeshComponent>(GetAttachParentActor()->GetRootComponent());
+		Spring->SetConstrainedComponents(TankBody, NAME_None, WheelMesh, NAME_None);
 	}
-	else
-		UE_LOG(LogTemp, Warning, TEXT("NULL"));
 }
 
 // Called every frame

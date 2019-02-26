@@ -27,8 +27,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-		UStaticMeshComponent* BodyMesh = nullptr;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 		UStaticMeshComponent* WheelMesh = nullptr;
