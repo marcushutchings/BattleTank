@@ -1,9 +1,9 @@
 // Corpyright Marcus Hutchings 2019
 
 #include "SprungWheel.h"
-#include "Components/StaticMeshComponent.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "Components/PrimitiveComponent.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 ASprungWheel::ASprungWheel()
@@ -29,10 +29,19 @@ ASprungWheel::ASprungWheel()
 	Spring->SetLinearYLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
 	Spring->SetLinearZLimit(ELinearConstraintMotion::LCM_Free, 0.f);
 
-	//Axle = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Axle Physics Constraint"));
+	Axle = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Axle Physics Constraint"));
+	Axle->SetAngularSwing1Limit(EAngularConstraintMotion::ACM_Locked, 0.f);
+	Axle->SetAngularSwing2Limit(EAngularConstraintMotion::ACM_Free, 0.f);
+	Axle->SetAngularTwistLimit(EAngularConstraintMotion::ACM_Locked, 0.f);
 
-	WheelMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Wheel Mesh"));
-	WheelMesh->SetupAttachment(Spring);
+	AxleMesh = CreateDefaultSubobject<USphereComponent>(FName("Axle Mesh"));
+	AxleMesh->SetupAttachment(Spring);
+
+	Axle->SetupAttachment(AxleMesh);
+
+	WheelMesh = CreateDefaultSubobject<USphereComponent>(FName("Wheel Mesh"));
+	WheelMesh->SetupAttachment(AxleMesh);
+
 }
 
 // Called when the game starts or when spawned
@@ -49,7 +58,10 @@ void ASprungWheel::SetupContraint()
 	{
 		auto BodyRoot = Cast<UPrimitiveComponent>(GetAttachParentActor()->GetRootComponent());
 		if (BodyRoot)
-			Spring->SetConstrainedComponents(BodyRoot, NAME_None, WheelMesh, NAME_None);
+		{
+			Spring->SetConstrainedComponents(BodyRoot, NAME_None, AxleMesh, NAME_None);
+			Axle->SetConstrainedComponents(AxleMesh, NAME_None, WheelMesh, NAME_None);
+		}
 	}
 }
 
