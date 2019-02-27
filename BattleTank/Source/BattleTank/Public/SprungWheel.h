@@ -22,6 +22,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void SetupContraint();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -33,4 +35,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 		UPhysicsConstraintComponent* Spring = nullptr;
+
+	//UPROPERTY(VisibleAnywhere, Category = "Components")
+	//	UPhysicsConstraintComponent* Axle = nullptr;
 };

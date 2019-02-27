@@ -3,6 +3,7 @@
 #include "SprungWheel.h"
 #include "Components/StaticMeshComponent.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
+#include "Components/PrimitiveComponent.h"
 
 // Sets default values
 ASprungWheel::ASprungWheel()
@@ -12,10 +13,6 @@ ASprungWheel::ASprungWheel()
 
 	Spring = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Spring Physics Constraint"));
 	SetRootComponent(Spring);
-
-	WheelMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Wheel Mesh"));
-	//WheelMesh->SetSimulatePhysics(true);
-	WheelMesh->SetupAttachment(Spring);
 
 	// Prevent any angular momentum
 	Spring->SetAngularSwing1Limit(EAngularConstraintMotion::ACM_Locked, 0.f);
@@ -31,6 +28,11 @@ ASprungWheel::ASprungWheel()
 	Spring->SetLinearXLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
 	Spring->SetLinearYLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
 	Spring->SetLinearZLimit(ELinearConstraintMotion::LCM_Free, 0.f);
+
+	//Axle = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Axle Physics Constraint"));
+
+	WheelMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Wheel Mesh"));
+	WheelMesh->SetupAttachment(Spring);
 }
 
 // Called when the game starts or when spawned
@@ -38,10 +40,16 @@ void ASprungWheel::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SetupContraint();
+}
+
+void ASprungWheel::SetupContraint()
+{
 	if (GetAttachParentActor())
 	{
-		auto TankBody = Cast<UStaticMeshComponent>(GetAttachParentActor()->GetRootComponent());
-		Spring->SetConstrainedComponents(TankBody, NAME_None, WheelMesh, NAME_None);
+		auto BodyRoot = Cast<UPrimitiveComponent>(GetAttachParentActor()->GetRootComponent());
+		if (BodyRoot)
+			Spring->SetConstrainedComponents(BodyRoot, NAME_None, WheelMesh, NAME_None);
 	}
 }
 
