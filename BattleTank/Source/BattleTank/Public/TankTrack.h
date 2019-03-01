@@ -23,7 +23,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Input")
 		void SetThrottle(float Throttle);
 
-	void DriveTrack();
+	void DriveTrack(float CurrentThrottle);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -33,10 +33,12 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	float CurrentThrottle = 0.f;
+	//float CurrentThrottle = 0.f;
 
-	void CorrectTrackSideWaysVelocity();
+	//void CorrectTrackSideWaysVelocity();
 
-	UFUNCTION()
-		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+	//UFUNCTION()
+	//	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
+	TArray<class ASprungWheel*> GetWheels() const;
 };

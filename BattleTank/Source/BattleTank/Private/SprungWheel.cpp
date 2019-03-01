@@ -4,12 +4,14 @@
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/SphereComponent.h"
+#include "Engine/World.h"
 
 // Sets default values
 ASprungWheel::ASprungWheel()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.TickGroup = ETickingGroup::TG_PostPhysics;
 
 	Spring = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("Spring Physics Constraint"));
 	SetRootComponent(Spring);
@@ -22,7 +24,7 @@ ASprungWheel::ASprungWheel()
 	// Spring the wheel and body vertically
 	Spring->SetLinearPositionDrive(false, false, true);
 	Spring->SetLinearVelocityDrive(false, false, true);
-	Spring->SetLinearDriveParams(50.f, 20.f, 0.f);
+	Spring->SetLinearDriveParams(500.f, 200.f, 0.f);
 
 	// Allow the wheel to fall and rise separately.
 	Spring->SetLinearXLimit(ELinearConstraintMotion::LCM_Locked, 0.f);
@@ -48,7 +50,12 @@ ASprungWheel::ASprungWheel()
 void ASprungWheel::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//OnComponentHit.AddDynamic(this, &UTankTrack::OnHit);
 	
+	WheelMesh->SetNotifyRigidBodyCollision(true);
+	WheelMesh->OnComponentHit.AddDynamic(this, &ASprungWheel::OnHit);
+
 	SetupContraint();
 }
 
@@ -65,10 +72,29 @@ void ASprungWheel::SetupContraint()
 	}
 }
 
+void ASprungWheel::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit)
+{
+	ApplyForce();
+}
+
+void ASprungWheel::ApplyForce()
+{
+	WheelMesh->AddForce(AxleMesh->GetForwardVector().GetSafeNormal() * TotalForceMagnitudeThisFrame);
+}
+
 // Called every frame
 void ASprungWheel::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (GetWorld()->TickGroup == TG_PostPhysics)
+	{
+		TotalForceMagnitudeThisFrame = 0.f;
+	}
+}
+
+void ASprungWheel::AddDrivingForce(float ForceMagnitude)
+{
+	TotalForceMagnitudeThisFrame += ForceMagnitude;
 }
 

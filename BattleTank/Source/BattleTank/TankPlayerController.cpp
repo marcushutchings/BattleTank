@@ -91,11 +91,14 @@ void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
-	if (AimingComponent)
-		FoundAimingComponent(AimingComponent);
-	else
-		UE_LOG(LogTemp, Error, TEXT("Tank Player Controller could not find Tank Aiming Component."));
+	if (GetPawn())
+	{
+		AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+		if (AimingComponent)
+			FoundAimingComponent(AimingComponent);
+		else
+			UE_LOG(LogTemp, Error, TEXT("Tank Player Controller could not find Tank Aiming Component."));
+	}
 }
 
 void ATankPlayerController::Tick(float DeltaSeconds)
